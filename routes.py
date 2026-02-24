@@ -53,6 +53,17 @@ def login():
     token = create_access_token({"id": user.id, "role": user.role})
     return jsonify({"access_token": token, "token_type": "bearer"})
 
+@auth_bp.route('/me', methods=['GET'])
+@token_required
+def get_current_user(current_user):
+    return jsonify({
+        "id": current_user.id,
+        "name": current_user.name,
+        "email": current_user.email,
+        "role": current_user.role,
+        "is_active": current_user.is_active
+    })
+
 # ============ GOATS ROUTES ============
 @goats_bp.route('', methods=['GET'])
 @token_required

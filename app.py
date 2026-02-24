@@ -7,7 +7,7 @@ from database import db, init_db
 from routes import register_routes
 
 def create_app():
-    app = Flask(__name__, static_folder='goat-farm-frontend/dist', static_url_path='')
+    app = Flask(__name__, static_folder='static', static_url_path='/static')
     app.config.from_object(Config)
     
     # Initialize extensions
@@ -51,11 +51,14 @@ def create_app():
     def serve_assets(filename):
         return send_from_directory(os.path.join(app.static_folder, 'assets'), filename)
     
-    # Serve React frontend for all other routes
-    @app.route('/', defaults={'path': ''})
+    # Serve index.html for root and all other routes
+    @app.route('/')
+    def serve_index():
+        return send_from_directory(app.static_folder, 'index.html')
+    
     @app.route('/<path:path>')
     def serve_frontend(path):
-        # Serve index.html for all non-API, non-asset routes
+        # Serve index.html for all non-API, non-static routes
         return send_from_directory(app.static_folder, 'index.html')
     
     return app
