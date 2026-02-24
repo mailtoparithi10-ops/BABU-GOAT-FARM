@@ -18,7 +18,7 @@ def create_app():
     with app.app_context():
         init_db()
     
-    # Register API routes
+    # Register API routes FIRST (before catch-all)
     register_routes(app)
     
     @app.route('/api')
@@ -32,13 +32,34 @@ def create_app():
     def health():
         return jsonify({"status": "healthy"})
     
-    # Serve React frontend
+    # Serve React frontend - catch-all route LAST
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def serve_frontend(path):
-        if path and os.path.exists(os.path.join(app.static_folder, path)):
-            return send_from_directory(app.static_folder, path)
-        return send_from_directory(app.static_folder, 'index.html')
+        static_folder = app.static_folder
+        
+        # Check if static folder exists
+        if not static_folder or not os.path.exists(static_folder):
+            return jsonify({
+                "error": "Frontend not built",
+                "message": "Run 'cd goat-farm-frontend && npm run build' to build the frontend",
+                "static_folder": static_folder
+            }), 404
+        
+        # If path exists, serve it
+        if path and os.path.exists(os.path.join(static_folder, path)):
+            return send_from_directory(static_folder, path)
+        
+        # Otherwise serve index.html
+        index_path = os.path.join(static_folder, 'index.html')
+        if os.path.exists(index_path):
+            return send_from_directory(static_folder, 'index.html')
+        
+        return jsonify({
+            "error": "index.html not found",
+            "static_folder": static_folder,
+            "files": os.listdir(static_folder) if os.path.exists(static_folder) else []
+        }), 404
     
     return app
 
