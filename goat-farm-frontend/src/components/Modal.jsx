@@ -4,8 +4,8 @@ const Modal = ({ isOpen, onClose, title, children }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-black bg-opacity-50">
-            <div className="relative w-full max-w-lg p-6 mx-auto bg-white rounded-lg shadow-lg">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+            <div className="relative w-full max-w-lg p-4 sm:p-6 bg-white rounded-lg shadow-lg max-h-full overflow-y-auto">
                 <div className="flex items-center justify-between mb-4 border-b pb-2">
                     <h3 className="text-lg font-bold text-gray-800">{title}</h3>
                     <button

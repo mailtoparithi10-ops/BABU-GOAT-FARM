@@ -19,8 +19,8 @@ const Login = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-farm-50">
-            <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-xl shadow-farm-200">
+        <div className="flex items-center justify-center min-h-screen bg-farm-50 p-4">
+            <div className="w-full max-w-md p-6 sm:p-8 bg-white rounded-lg shadow-xl shadow-farm-200">
                 <div className="flex flex-col items-center mb-6">
                     <div className="p-3 bg-farm-100 rounded-full mb-3 text-farm-600">
                         <Leaf size={40} />
