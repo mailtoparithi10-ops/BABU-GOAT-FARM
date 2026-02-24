@@ -2,7 +2,7 @@ services:
   - type: web
     name: goat-farm-backend
     env: python
-    buildCommand: pip install -r requirements.txt && cd goat-farm-frontend && npm install && npm run build
+    buildCommand: bash build.sh
     startCommand: gunicorn wsgi:app --bind 0.0.0.0:$PORT
     envVars:
       - key: SECRET_KEY

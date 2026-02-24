@@ -12,6 +12,9 @@ ENV/
 dist/
 build/
 
+# Frontend build (allow goat-farm-frontend/dist for deployment)
+!goat-farm-frontend/dist/
+
 # Environment
 .env
 .env.local
