@@ -32,6 +32,20 @@ def create_app():
     def health():
         return jsonify({"status": "healthy"})
     
+    @app.route('/api/debug/users')
+    def debug_users():
+        from models import User
+        users = User.query.all()
+        return jsonify({
+            "total_users": len(users),
+            "users": [{
+                "id": u.id,
+                "email": u.email,
+                "role": u.role,
+                "is_active": u.is_active
+            } for u in users]
+        })
+    
     # Serve React frontend - catch-all route LAST
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
