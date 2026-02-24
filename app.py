@@ -50,8 +50,8 @@ def create_app():
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def serve_frontend(path):
-        # Don't serve frontend for API routes
-        if path.startswith('api/'):
+        # Don't serve frontend for API routes - let them return 404
+        if path.startswith('api'):
             return jsonify({"error": "API endpoint not found"}), 404
         
         static_folder = app.static_folder
@@ -64,11 +64,13 @@ def create_app():
                 "static_folder": static_folder
             }), 404
         
-        # If path exists, serve it
-        if path and os.path.exists(os.path.join(static_folder, path)):
-            return send_from_directory(static_folder, path)
+        # Check if it's a static asset (has file extension)
+        if path and '.' in path.split('/')[-1]:
+            file_path = os.path.join(static_folder, path)
+            if os.path.exists(file_path):
+                return send_from_directory(static_folder, path)
         
-        # Otherwise serve index.html
+        # For all other routes (React Router routes), serve index.html
         index_path = os.path.join(static_folder, 'index.html')
         if os.path.exists(index_path):
             return send_from_directory(static_folder, 'index.html')
