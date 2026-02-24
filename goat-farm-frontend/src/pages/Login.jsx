@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import useAuth from '../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
-import { Leaf } from 'lucide-react';
+import { Leaf, Eye, EyeOff } from 'lucide-react';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const { login, user } = useAuth();
 
     if (user) {
@@ -48,15 +49,26 @@ const Login = () => {
                         <label className="block mb-2 text-sm font-medium text-gray-700" htmlFor="password">
                             Password
                         </label>
-                        <input
-                            className="w-full px-3 py-2 mb-3 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline focus:border-farm-500 focus:ring-1 focus:ring-farm-500"
-                            id="password"
-                            type="password"
-                            placeholder="******************"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
+                        <div className="relative">
+                            <input
+                                className="w-full px-3 py-2 pr-10 mb-3 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline focus:border-farm-500 focus:ring-1 focus:ring-farm-500"
+                                id="password"
+                                type={showPassword ? 'text' : 'password'}
+                                placeholder="******************"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute inset-y-0 right-0 flex items-center pr-3 pb-3 text-gray-500 hover:text-farm-600 transition"
+                                tabIndex={-1}
+                                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                            >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                        </div>
                     </div>
                     <div className="flex items-center justify-between">
                         <button
