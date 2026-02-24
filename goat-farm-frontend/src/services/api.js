@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// In production on Vercel: requests go to /api/* (same domain, no CORS)
-// In local dev: requests go to http://localhost:8000
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+// In production on Render: use your backend URL
+// In local dev: Flask runs on port 5000
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const api = axios.create({
     baseURL: API_URL,
