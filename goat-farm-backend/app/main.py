@@ -1,10 +1,12 @@
 import uvicorn
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from .database import engine, Base, SessionLocal
 from .init_admin import create_initial_admin
+from .config import settings
 
 from .routers import (
     auth_router,
@@ -17,7 +19,7 @@ from .routers import (
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create Database Tables
+    # Create Database Tables on startup
     Base.metadata.create_all(bind=engine)
     
     # Bootstrap Initial Admin User from Config
@@ -28,19 +30,23 @@ async def lifespan(app: FastAPI):
         db.close()
         
     yield
-    # Cleanup logic (if any) runs after application exit
+
+IS_PRODUCTION = os.getenv("VERCEL", False) or os.getenv("PRODUCTION", False)
 
 app = FastAPI(
     title="Babu Goat Farm Management API",
     description="Meat Goat Farm Management System for Babu Goat Farm",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
+    # Disable docs in production for security
+    docs_url=None if IS_PRODUCTION else "/docs",
+    redoc_url=None if IS_PRODUCTION else "/redoc",
 )
 
 # CORS Configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # In production, replace with specific origins
+    allow_origins=settings.cors_origins_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -56,8 +62,8 @@ app.include_router(dashboard_router.router)
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to Babu Goat Farm Management System API"}
+    return {"message": "Babu Goat Farm API is running", "version": "1.0.0"}
 
-# For rendering deployment / production usage
+# For local development only
 if __name__ == "__main__":
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
