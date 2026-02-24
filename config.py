@@ -4,13 +4,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    # Database
+    # Database - Use SQLite for free tier deployment
     database_url = os.getenv('DATABASE_URL')
-    if not database_url:
-        raise ValueError("DATABASE_URL environment variable is not set!")
     
-    # Fix postgres:// to postgresql:// (Render uses postgres://)
-    if database_url.startswith('postgres://'):
+    if not database_url:
+        # Default to SQLite if no DATABASE_URL is provided
+        database_url = 'sqlite:///goatfarm.db'
+    elif database_url.startswith('postgres://'):
+        # Fix postgres:// to postgresql:// (Render uses postgres://)
         database_url = database_url.replace('postgres://', 'postgresql://', 1)
     
     SQLALCHEMY_DATABASE_URI = database_url
