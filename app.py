@@ -46,33 +46,17 @@ def create_app():
             } for u in users]
         })
     
-    # Serve React frontend - catch-all route LAST (but not for /api routes)
+    # Serve static files
+    @app.route('/assets/<path:filename>')
+    def serve_assets(filename):
+        return send_from_directory(os.path.join(app.static_folder, 'assets'), filename)
+    
+    # Serve React frontend for all other routes
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def serve_frontend(path):
-        static_folder = app.static_folder
-        
-        # Check if static folder exists
-        if not static_folder or not os.path.exists(static_folder):
-            return jsonify({
-                "error": "Frontend not built",
-                "static_folder": static_folder
-            }), 404
-        
-        # If it's a file with extension (like .js, .css, .png), try to serve it
-        if path and '.' in os.path.basename(path):
-            file_path = os.path.join(static_folder, path)
-            if os.path.exists(file_path):
-                return send_from_directory(static_folder, path)
-            return jsonify({"error": "File not found"}), 404
-        
-        # For all other routes (including /, /dashboard, /goats, etc.), serve index.html
-        # This allows React Router to handle the routing
-        index_path = os.path.join(static_folder, 'index.html')
-        if os.path.exists(index_path):
-            return send_from_directory(static_folder, 'index.html')
-        
-        return jsonify({"error": "index.html not found"}), 404
+        # Serve index.html for all non-API, non-asset routes
+        return send_from_directory(app.static_folder, 'index.html')
     
     return app
 
