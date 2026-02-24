@@ -46,19 +46,19 @@ def create_app():
             } for u in users]
         })
     
-    # Serve static files
-    @app.route('/assets/<path:filename>')
-    def serve_assets(filename):
-        return send_from_directory(os.path.join(app.static_folder, 'assets'), filename)
-    
-    # Serve index.html for root and all other routes
+    # Serve index.html for root
     @app.route('/')
     def serve_index():
         return send_from_directory(app.static_folder, 'index.html')
     
+    # Catch-all route for frontend (but not for /api or /static)
     @app.route('/<path:path>')
     def serve_frontend(path):
-        # Serve index.html for all non-API, non-static routes
+        # Don't intercept API or static routes
+        if path.startswith('api/') or path.startswith('static/'):
+            return jsonify({"error": "Not found"}), 404
+        
+        # For all other routes, serve index.html
         return send_from_directory(app.static_folder, 'index.html')
     
     return app
