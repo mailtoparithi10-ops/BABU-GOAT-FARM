@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, send_from_directory, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
@@ -51,14 +51,13 @@ def create_app():
     def serve_index():
         return send_from_directory(app.static_folder, 'index.html')
     
-    # Catch-all route for frontend (but not for /api or /static)
-    @app.route('/<path:path>')
-    def serve_frontend(path):
-        # Don't intercept API or static routes
-        if path.startswith('api/') or path.startswith('static/'):
+    # Use error handler for 404 to serve index.html (for client-side routing)
+    @app.errorhandler(404)
+    def not_found(e):
+        # If it's an API request, return JSON error
+        if request.path.startswith('/api'):
             return jsonify({"error": "Not found"}), 404
-        
-        # For all other routes, serve index.html
+        # Otherwise serve index.html for client-side routing
         return send_from_directory(app.static_folder, 'index.html')
     
     return app
