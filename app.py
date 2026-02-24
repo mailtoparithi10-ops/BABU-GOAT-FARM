@@ -46,10 +46,14 @@ def create_app():
             } for u in users]
         })
     
-    # Serve React frontend - catch-all route LAST
+    # Serve React frontend - catch-all route LAST (but not for /api routes)
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def serve_frontend(path):
+        # Don't serve frontend for API routes
+        if path.startswith('api/'):
+            return jsonify({"error": "API endpoint not found"}), 404
+        
         static_folder = app.static_folder
         
         # Check if static folder exists
