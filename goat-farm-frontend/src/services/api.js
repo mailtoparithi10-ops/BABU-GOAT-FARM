@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-// Replace with actual backend URL in production
+// In production on Vercel: requests go to /api/* (same domain, no CORS)
+// In local dev: requests go to http://localhost:8000
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const api = axios.create({

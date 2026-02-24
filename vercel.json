@@ -1,0 +1,21 @@
+{
+    "version": 2,
+    "buildCommand": "cd goat-farm-frontend && npm install && npm run build",
+    "outputDirectory": "goat-farm-frontend/dist",
+    "framework": null,
+    "functions": {
+        "api/index.py": {
+            "runtime": "python3.11"
+        }
+    },
+    "rewrites": [
+        {
+            "source": "/api/:path*",
+            "destination": "/api/index.py"
+        },
+        {
+            "source": "/((?!api/).*)",
+            "destination": "/index.html"
+        }
+    ]
+}
