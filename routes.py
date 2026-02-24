@@ -5,13 +5,13 @@ from auth import hash_password, verify_password, create_access_token, token_requ
 from datetime import datetime, date
 from sqlalchemy import func, extract
 
-# Create blueprints
-auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
-goats_bp = Blueprint('goats', __name__, url_prefix='/goats')
-inventory_bp = Blueprint('inventory', __name__, url_prefix='/inventory')
-expenses_bp = Blueprint('expenses', __name__, url_prefix='/expenses')
-sales_bp = Blueprint('sales', __name__, url_prefix='/sales')
-dashboard_bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
+# Create blueprints with /api prefix
+auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
+goats_bp = Blueprint('goats', __name__, url_prefix='/api/goats')
+inventory_bp = Blueprint('inventory', __name__, url_prefix='/api/inventory')
+expenses_bp = Blueprint('expenses', __name__, url_prefix='/api/expenses')
+sales_bp = Blueprint('sales', __name__, url_prefix='/api/sales')
+dashboard_bp = Blueprint('dashboard', __name__, url_prefix='/api/dashboard')
 
 # ============ AUTH ROUTES ============
 @auth_bp.route('/register', methods=['POST'])

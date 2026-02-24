@@ -1,8 +1,7 @@
 import axios from 'axios';
 
-// In production on Render: use your backend URL
-// In local dev: Flask runs on port 5000
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+// API URL - use relative path when served from same domain
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 const api = axios.create({
     baseURL: API_URL,
